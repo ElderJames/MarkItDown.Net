@@ -1,6 +1,6 @@
 ﻿// Models/DocumentConverterResult.cs
 
-namespace MarkItDown.Models
+namespace MarkItDownSharp.Models
 {
     public class DocumentConverterResult
     {

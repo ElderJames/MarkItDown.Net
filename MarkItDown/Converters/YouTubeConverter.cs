@@ -9,23 +9,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using MarkItDown.Helpers;
-using MarkItDown.Models;
+using MarkItDownSharp.Helpers;
+using MarkItDownSharp.Models;
 using Newtonsoft.Json.Linq;
 using YoutubeExplode;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public class YouTubeConverter : DocumentConverter
     {
-        private readonly HttpClient _httpClient;
-        private readonly CustomMarkdownConverter _markdownConverter;
+    
         private readonly YoutubeClient _youtubeClient;
 
-        public YouTubeConverter(HttpClient httpClient)
+        public YouTubeConverter()
         {
-            _markdownConverter = new CustomMarkdownConverter();
-            _httpClient = httpClient;
             _youtubeClient = new YoutubeClient();
         }
 

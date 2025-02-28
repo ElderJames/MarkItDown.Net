@@ -1,4 +1,4 @@
-﻿// Converters/PDFConverter.cs
+﻿// Converters/PdfConverter.cs
 
 using System;
 using System.Collections.Generic;
@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MarkItDown.Models;
+using MarkItDownSharp.Models;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
-    public class PDFConverter : DocumentConverter
+    public class PdfConverter : DocumentConverter
     {
         public override bool CanConvertUrl(string url)
         {

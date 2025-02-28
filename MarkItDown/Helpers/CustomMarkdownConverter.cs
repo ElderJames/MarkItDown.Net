@@ -1,21 +1,13 @@
 ﻿// Helpers/CustomMarkdownConverter.cs
 
 using HtmlAgilityPack;
-using Markdig;
+
 using ReverseMarkdown;
 
-namespace MarkItDown.Helpers
+namespace MarkItDownSharp.Helpers
 {
     public class CustomMarkdownConverter
     {
-        private readonly MarkdownPipeline _pipeline;
-
-        public CustomMarkdownConverter()
-        {
-            _pipeline = new MarkdownPipelineBuilder()
-                .UseAdvancedExtensions()
-                .Build();
-        }
 
         /// <summary>
         ///     Converts an HtmlDocument to Markdown.

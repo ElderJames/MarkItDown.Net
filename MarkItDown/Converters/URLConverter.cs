@@ -6,25 +6,25 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using MarkItDown.Exceptions;
-using MarkItDown.Models;
+using MarkItDownSharp.Exceptions;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
-    public class URLConverter : DocumentConverter
+    public class UrlConverter : DocumentConverter
     {
         private readonly HttpClient _httpClient;
         private readonly List<DocumentConverter> _specificUrlConverters;
 
-        public URLConverter(HttpClient httpClient = null)
+        public UrlConverter(HttpClient httpClient = null)
         {
             _httpClient = httpClient ?? new HttpClient();
 
             // Initialize specific URL converters
             _specificUrlConverters = new List<DocumentConverter>
             {
-                new WikipediaConverter(_httpClient),
-                new YouTubeConverter(_httpClient),
+                new WikipediaConverter(),
+                new YouTubeConverter(),
                 new BingSerpConverter(),
                 new HtmlConverter()
                 // Add other specific URL converters here

@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
-using MarkItDown.Exceptions;
-using MarkItDown.Helpers;
-using MarkItDown.Models;
+using MarkItDownSharp.Exceptions;
+using MarkItDownSharp.Helpers;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public class XlsxConverter : DocumentConverter
     {

@@ -1,26 +1,26 @@
 ﻿// MarkItDown.Tests/BaseConverterTests.cs
 
-using MarkItDown.Models;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Tests;
+namespace MarkItDownSharp.Tests;
 
 public abstract class BaseConverterTests
 {
-    protected readonly MarkItDownConverter _converter;
-    protected readonly string _testDataPath;
+    protected readonly MarkItDownConverter Converter;
+    protected readonly string TestDataPath;
 
     public BaseConverterTests()
     {
-        _converter = new MarkItDownConverter();
-        _testDataPath = Path.Combine(Directory.GetCurrentDirectory(), "TestData");
+        Converter = new MarkItDownConverter();
+        TestDataPath = Path.Combine(Directory.GetCurrentDirectory(), "TestData");
     }
 
     protected async Task<DocumentConverterResult> ConvertAsync(string relativePathOrUrl)
     {
-        var fullPathOrUrl = Path.Combine(_testDataPath, relativePathOrUrl);
-        if (File.Exists(fullPathOrUrl)) return await _converter.ConvertLocalAsync(fullPathOrUrl);
+        var fullPathOrUrl = Path.Combine(TestDataPath, relativePathOrUrl);
+        if (File.Exists(fullPathOrUrl)) return await Converter.ConvertLocalAsync(fullPathOrUrl);
 
         // Assume it's a URL
-        return await _converter.ConvertLocalAsync(relativePathOrUrl);
+        return await Converter.ConvertLocalAsync(relativePathOrUrl);
     }
 }

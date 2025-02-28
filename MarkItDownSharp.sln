@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35617.110
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDown", "MarkItDown\MarkItDown.csproj", "{BEB01153-40FA-446D-8859-DA5B89772C30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDownSharp", "MarkItDown\MarkItDownSharp.csproj", "{BEB01153-40FA-446D-8859-DA5B89772C30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDownDemo", "MarkItDownDemo\MarkItDownDemo.csproj", "{161D5D72-7AAD-4AA4-A83C-8AFC444AA9E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDownSharpDemo", "MarkItDownDemo\MarkItDownSharpDemo.csproj", "{161D5D72-7AAD-4AA4-A83C-8AFC444AA9E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDown.Tests", "MarkItDown.Tests\MarkItDown.Tests.csproj", "{C53C49DC-9298-401C-9E0D-A9DB01D17C42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDownSharp.Tests", "MarkItDown.Tests\MarkItDownSharp.Tests.csproj", "{C53C49DC-9298-401C-9E0D-A9DB01D17C42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

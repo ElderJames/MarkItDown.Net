@@ -2,9 +2,9 @@
 
 using System.Collections.Generic;
 using System.Net.Http;
-using MarkItDown.Converters;
+using MarkItDownSharp.Converters;
 
-namespace MarkItDown.Models
+namespace MarkItDownSharp.Models
 {
     public class ConversionOptions
     {

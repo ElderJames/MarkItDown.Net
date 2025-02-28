@@ -5,10 +5,10 @@ using System.IO;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using MarkItDown.Helpers;
-using MarkItDown.Models;
+using MarkItDownSharp.Helpers;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public class ZipConverter : DocumentConverter
     {

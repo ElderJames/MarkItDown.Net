@@ -2,7 +2,7 @@
 
 using System;
 
-namespace MarkItDown.Helpers
+namespace MarkItDownSharp.Helpers
 {
     public static class UrlHelper
     {

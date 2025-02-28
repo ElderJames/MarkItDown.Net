@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\MarkItDown\MarkItDown.csproj" />
+		<ProjectReference Include="..\MarkItDown\MarkItDownSharp.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -5,10 +5,10 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using MarkItDown.Helpers;
-using MarkItDown.Models;
+using MarkItDownSharp.Helpers;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public class HtmlConverter : DocumentConverter
     {

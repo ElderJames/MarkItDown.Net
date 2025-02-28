@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 
-namespace MarkItDown.Helpers
+namespace MarkItDownSharp.Helpers
 {
     public static class PathHelper
     {

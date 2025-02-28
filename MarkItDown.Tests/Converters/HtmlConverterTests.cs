@@ -1,6 +1,6 @@
 ﻿// MarkItDown.Tests/Converters/HtmlConverterTests.cs
 
-namespace MarkItDown.Tests.Converters;
+namespace MarkItDownSharp.Tests.Converters;
 
 public class HtmlConverterTests : BaseConverterTests
 {

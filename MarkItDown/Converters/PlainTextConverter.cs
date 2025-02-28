@@ -3,9 +3,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using MarkItDown.Models;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public class PlainTextConverter : DocumentConverter
     {

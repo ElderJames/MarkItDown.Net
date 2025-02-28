@@ -2,7 +2,7 @@
 
 using System;
 
-namespace MarkItDown.Exceptions
+namespace MarkItDownSharp.Exceptions
 {
     public class UnsupportedFormatException : Exception
     {

@@ -1,6 +1,6 @@
 ﻿// MarkItDown.Tests/Converters/PlainTextConverterTests.cs
 
-namespace MarkItDown.Tests.Converters;
+namespace MarkItDownSharp.Tests.Converters;
 
 public class PlainTextConverterTests : BaseConverterTests
 {
@@ -16,7 +16,7 @@ public class PlainTextConverterTests : BaseConverterTests
         // Assert
         Assert.NotNull(result);
         Assert.Null(result.Title); // As per PlainTextConverter implementation
-        var expectedContent = File.ReadAllText(Path.Combine(_testDataPath, fileName));
+        var expectedContent = File.ReadAllText(Path.Combine(TestDataPath, fileName));
         Assert.Equal(expectedContent, result.TextContent);
     }
 }

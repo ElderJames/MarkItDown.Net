@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MarkItDown.Converters;
-using MarkItDown.Exceptions;
-using MarkItDown.Helpers;
-using MarkItDown.Models;
+using MarkItDownSharp.Converters;
+using MarkItDownSharp.Exceptions;
+using MarkItDownSharp.Helpers;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown
+namespace MarkItDownSharp
 {
     public class MarkItDownConverter
     {
@@ -24,9 +24,9 @@ namespace MarkItDown
             _pageConverters = new List<DocumentConverter>();
 
             // Register converters in order of priority
-            RegisterPageConverter(new URLConverter(_httpClient));
+            RegisterPageConverter(new UrlConverter(_httpClient));
             RegisterPageConverter(new ZipConverter());
-            RegisterPageConverter(new PDFConverter());
+            RegisterPageConverter(new PdfConverter());
             RegisterPageConverter(new DocxConverter());
             RegisterPageConverter(new XlsxConverter());
             RegisterPageConverter(new PptxConverter());
@@ -51,7 +51,7 @@ namespace MarkItDown
             if (UrlHelper.IsValidUrl(pathOrUrl))
             {
                 // Delegate to URLConverter
-                var urlConverter = _pageConverters.OfType<URLConverter>()
+                var urlConverter = _pageConverters.OfType<UrlConverter>()
                     .FirstOrDefault(c => c.CanConvertUrl(pathOrUrl));
                 if (urlConverter != null)
                 {

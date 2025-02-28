@@ -3,11 +3,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using MarkItDown.Models;
+using MarkItDownSharp.Models;
 using NAudio.Wave;
 using File = System.IO.File;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public abstract class MediaConverter : DocumentConverter
     {

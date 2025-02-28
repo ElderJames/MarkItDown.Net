@@ -1,9 +1,9 @@
 ﻿// Converters/DocumentConverter.cs
 
 using System.Threading.Tasks;
-using MarkItDown.Models;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public abstract class DocumentConverter
     {

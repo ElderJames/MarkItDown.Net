@@ -5,20 +5,20 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using MarkItDown.Helpers;
-using MarkItDown.Models;
+using MarkItDownSharp.Helpers;
+using MarkItDownSharp.Models;
 
-namespace MarkItDown.Converters
+namespace MarkItDownSharp.Converters
 {
     public class WikipediaConverter : DocumentConverter
     {
-        private readonly HttpClient _httpClient;
+       
         private readonly CustomMarkdownConverter _markdownConverter;
 
-        public WikipediaConverter(HttpClient httpClient)
+        public WikipediaConverter()
         {
             _markdownConverter = new CustomMarkdownConverter();
-            _httpClient = httpClient;
+            
         }
 
         public override bool CanConvertUrl(string url)

@@ -1,8 +1,8 @@
 ﻿// MarkItDown.Tests/Converters/HtmlConverterTests.cs
 
-namespace MarkItDown.Tests.Converters;
+namespace MarkItDownSharp.Tests.Converters;
 
-public class PDFConverterTests : BaseConverterTests
+public class PdfConverterTests : BaseConverterTests
 {
     [Fact]
     public async Task Convert_PDFFile_ShouldReturnExpectedMarkdown()
