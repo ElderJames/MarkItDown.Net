@@ -1,6 +1,7 @@
 ﻿// Converters/BingSerpConverter.cs
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -129,6 +130,12 @@ namespace MarkItDownSharp.Converters
                 Title = doc.DocumentNode.SelectSingleNode("//title")?.InnerText.Trim(),
                 TextContent = markdownBuilder.ToString().Trim()
             };
+        }
+
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
         }
 
         /// <summary>

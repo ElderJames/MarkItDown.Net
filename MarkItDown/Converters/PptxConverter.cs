@@ -70,6 +70,12 @@ namespace MarkItDownSharp.Converters
             };
         }
 
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
+        }
+
         private void ProcessSlideShapes(Slide slide, StringBuilder mdContent, ConversionOptions options)
         {
             var titleShape = slide.Descendants<Shape>()

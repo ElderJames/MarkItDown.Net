@@ -16,6 +16,7 @@ It supports:
 - [x] Bing Search Result Pages (SERP)
 - [x] ZIP files (recursively iterates over contents)
 - [x] PowerPoint (.pptx)
+- [x] Confluence (spaces and single pages)
 
 > [!NOTE]
 >

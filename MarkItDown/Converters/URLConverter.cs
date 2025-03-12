@@ -16,13 +16,14 @@ namespace MarkItDownSharp.Converters
         private readonly HttpClient _httpClient;
         private readonly List<DocumentConverter> _specificUrlConverters;
 
-        public UrlConverter(HttpClient httpClient = null)
+        public UrlConverter()
         {
-            _httpClient = httpClient ?? new HttpClient();
+            _httpClient = new HttpClient();
 
             // Initialize specific URL converters
             _specificUrlConverters = new List<DocumentConverter>
             {
+                new ConfluenceConverter(),
                 new WikipediaConverter(),
                 new YouTubeConverter(),
                 new BingSerpConverter(),
@@ -41,7 +42,7 @@ namespace MarkItDownSharp.Converters
 
         public override bool CanConvertFile(string extension)
         {
-            // URLConverter doesn't handle file extensions directly
+            // URLConverter doesn't handle file extensions directly.
             return false;
         }
 
@@ -53,14 +54,19 @@ namespace MarkItDownSharp.Converters
             var url = pathOrUrl;
             options.Url = url;
 
-            // Determine which specific converter to use based on the URL
+            // Determine which specific converter to use based on the URL.
             var selectedConverter = GetSpecificConverter(url);
-
             if (selectedConverter == null)
-                // Fallback to a default converter, e.g., HtmlConverter
+                // Fallback to a default converter, for example, HtmlConverter.
                 selectedConverter = new HtmlConverter();
 
-            // Determine the file extension
+            // If the selected converter is ConfluenceConverter, call its ConvertAsync directly.
+            if (selectedConverter is ConfluenceConverter)
+            {
+                return await selectedConverter.ConvertAsync(url, options);
+            }
+
+            // Otherwise, download content into a temporary file.
             var extension = GetExtensionFromUrl(url);
             var tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + extension);
 
@@ -70,47 +76,97 @@ namespace MarkItDownSharp.Converters
 
                 if (IsTextFile(extension))
                 {
-                    // For text files, convert bytes to string and write as text
+                    // For text files, decode the bytes to string and write as text.
                     var content = Encoding.UTF8.GetString(contentBytes);
                     await Task.Run(() => File.WriteAllText(tempFilePath, content));
                 }
                 else
                 {
-                    // For binary files, write bytes directly
+                    // For binary files, write bytes directly.
                     await Task.Run(() => File.WriteAllBytes(tempFilePath, contentBytes));
                 }
 
-                // Update the options with the temp file path and extension
+                // Update the options with the determined file extension.
                 options.FileExtension = extension;
 
-                // Delegate conversion to the selected specific converter
+                // Delegate conversion to the selected specific converter.
                 var result = await selectedConverter.ConvertAsync(tempFilePath, options);
                 return result;
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
                 throw new ConversionException($"Failed to convert URL: {url}", ex);
             }
             finally
             {
-                // Ensure the temporary file is deleted
+                // Clean up the temporary file.
                 if (File.Exists(tempFilePath))
-                    try
-                    {
-                        File.Delete(tempFilePath);
-                    }
-                    catch
-                    {
-                        // Log or handle the exception if needed
-                    }
+                {
+                    try { File.Delete(tempFilePath); } catch { /* Optionally log deletion errors */ }
+                }
+            }
+        }
+
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            if (!IsValidUrl(pathOrUrl))
+                return null;
+
+            var url = pathOrUrl;
+            options.Url = url;
+
+            // Determine which specific converter to use based on the URL.
+            var selectedConverter = GetSpecificConverter(url);
+            if (selectedConverter == null)
+                selectedConverter = new HtmlConverter();
+
+            // If the selected converter is ConfluenceConverter (or any converter that properly supports multiple results),
+            // delegate directly to its ConvertToListAsync.
+            if (selectedConverter is ConfluenceConverter)
+            {
+                return await selectedConverter.ConvertToListAsync(url, options);
+            }
+
+            // Otherwise, proceed to download the URL content to a temp file.
+            var extension = GetExtensionFromUrl(url);
+            var tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + extension);
+
+            try
+            {
+                var contentBytes = await DownloadContentAsync(url);
+
+                if (IsTextFile(extension))
+                {
+                    var content = Encoding.UTF8.GetString(contentBytes);
+                    await Task.Run(() => File.WriteAllText(tempFilePath, content));
+                }
+                else
+                {
+                    await Task.Run(() => File.WriteAllBytes(tempFilePath, contentBytes));
+                }
+
+                options.FileExtension = extension;
+
+                // Delegate to the specific converter’s ConvertToListAsync.
+                var results = await selectedConverter.ConvertToListAsync(tempFilePath, options);
+                return results;
+            }
+            catch (Exception ex)
+            {
+                throw new ConversionException($"Failed to convert URL to list: {url}", ex);
+            }
+            finally
+            {
+                if (File.Exists(tempFilePath))
+                {
+                    try { File.Delete(tempFilePath); } catch { /* Optionally log deletion errors */ }
+                }
             }
         }
 
         private bool IsTextFile(string extension)
         {
-            var textExtensions = new HashSet<string>
-                { ".html", ".htm", ".txt", ".docx", ".pptx", ".xlsx", ".csv", ".md" };
+            var textExtensions = new HashSet<string> { ".html", ".htm", ".txt", ".docx", ".pptx", ".xlsx", ".csv", ".md" };
             return textExtensions.Contains(extension);
         }
 
@@ -123,8 +179,10 @@ namespace MarkItDownSharp.Converters
         private DocumentConverter GetSpecificConverter(string url)
         {
             foreach (var converter in _specificUrlConverters)
+            {
                 if (converter.CanConvertUrl(url))
                     return converter;
+            }
             return null;
         }
 
@@ -142,18 +200,15 @@ namespace MarkItDownSharp.Converters
                 var uri = new Uri(url);
                 var path = uri.AbsolutePath;
                 var extension = Path.GetExtension(path).ToLowerInvariant();
-
                 if (!string.IsNullOrEmpty(extension))
                     return extension;
-
                 if (url.EndsWith("/"))
                     return ".html";
-
-                return ".html"; // Default to .html if no extension is found
+                return ".html"; // Default to .html if no extension is found.
             }
             catch
             {
-                return ".html"; // Fallback to .html in case of an invalid URL
+                return ".html"; // Fallback to .html.
             }
         }
     }

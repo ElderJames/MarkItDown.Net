@@ -1,6 +1,7 @@
 ﻿// Converters/XlsxConverter.cs
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -96,6 +97,12 @@ namespace MarkItDownSharp.Converters
                 // Handle exceptions (e.g., corrupted file) as needed
                 throw new ConversionException($"Failed to convert Excel file '{pathOrUrl}': {ex.Message}", ex);
             }
+        }
+
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
         }
     }
 }

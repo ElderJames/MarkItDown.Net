@@ -1,6 +1,7 @@
 ﻿// Converters/MediaConverters.cs
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using MarkItDownSharp.Models;
@@ -69,6 +70,11 @@ namespace MarkItDownSharp.Converters
                 TextContent = markdown.Trim()
             };
         }
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
+        }
 
         private async Task<string> TranscribeAudioAsync(string localPath, ConversionOptions options)
         {
@@ -124,6 +130,12 @@ namespace MarkItDownSharp.Converters
                 Title = null,
                 TextContent = markdown.Trim()
             };
+        }
+
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
         }
 
         private async Task<string> TranscribeAudioAsync(string localPath, ConversionOptions options)

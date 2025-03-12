@@ -60,7 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BingSerpConverter.cs" />
-    <Compile Include="Converters\ConversionOptions.cs" />
+    <Compile Include="Converters\ConfluenceConverter.cs" />
+    <Compile Include="Models\ConversionOptions.cs" />
     <Compile Include="Converters\DocumentConverter.cs" />
     <Compile Include="Converters\DocxConverter.cs" />
     <Compile Include="Converters\HtmlConverter.cs" />

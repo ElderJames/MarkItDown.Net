@@ -70,6 +70,12 @@ namespace MarkItDownSharp.Converters
 
             return result;
         }
+
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
+        }
     }
 
     /// <summary>

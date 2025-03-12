@@ -1,5 +1,6 @@
 ﻿// Converters/WikipediaConverter.cs
 
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -64,6 +65,11 @@ namespace MarkItDownSharp.Converters
                 Title = title,
                 TextContent = markdownContent
             };
+        }
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
         }
     }
 }

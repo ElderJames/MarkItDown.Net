@@ -14,17 +14,15 @@ namespace MarkItDownSharp
 {
     public class MarkItDownConverter
     {
-        private readonly HttpClient _httpClient;
         private readonly List<DocumentConverter> _pageConverters;
 
-        public MarkItDownConverter(HttpClient httpClient = null)
+        public MarkItDownConverter()
         {
-            _httpClient = httpClient ?? new HttpClient();
-
             _pageConverters = new List<DocumentConverter>();
 
             // Register converters in order of priority
-            RegisterPageConverter(new UrlConverter(_httpClient));
+            RegisterPageConverter(new ConfluenceConverter());  // highest priority for Confluence URLs
+            RegisterPageConverter(new UrlConverter());
             RegisterPageConverter(new ZipConverter());
             RegisterPageConverter(new PdfConverter());
             RegisterPageConverter(new DocxConverter());
@@ -38,7 +36,7 @@ namespace MarkItDownSharp
         }
 
         /// <summary>
-        ///     Converts a local file or URL to Markdown.
+        /// Converts a local file or URL to Markdown.
         /// </summary>
         /// <param name="pathOrUrl">The local file path or URL.</param>
         /// <param name="options">Additional conversion options.</param>
@@ -69,19 +67,67 @@ namespace MarkItDownSharp
                 options.FileExtension = extension;
 
                 foreach (var converter in _pageConverters)
+                {
                     if (converter.CanConvertFile(extension))
                     {
                         var result = await converter.ConvertAsync(pathOrUrl, options);
                         if (result != null)
                             return result;
                     }
+                }
             }
 
             throw new UnsupportedFormatException($"Unsupported input: {pathOrUrl}");
         }
 
         /// <summary>
-        ///     Registers a new page converter.
+        /// Converts a local file or URL to a list of DocumentConverterResult items.
+        /// This method delegates to the underlying converter's ConvertToListAsync, which may return 
+        /// multiple results (for example, one for each page in a Confluence space) or a single-item list.
+        /// </summary>
+        /// <param name="pathOrUrl">The local file path or URL.</param>
+        /// <param name="options">Additional conversion options.</param>
+        /// <returns>A List of DocumentConverterResult containing the conversion output.</returns>
+        public async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options = null)
+        {
+            options = options ?? new ConversionOptions();
+            options.ParentConverters = _pageConverters;
+
+            if (UrlHelper.IsValidUrl(pathOrUrl))
+            {
+                // Look for a converter that handles the URL.
+                var converter = _pageConverters.FirstOrDefault(c => c.CanConvertUrl(pathOrUrl));
+                if (converter != null)
+                {
+                    var results = await converter.ConvertToListAsync(pathOrUrl, options);
+                    if (results != null && results.Count > 0)
+                        return results;
+                }
+            }
+            else
+            {
+                if (!File.Exists(pathOrUrl))
+                    throw new FileNotFoundException($"File not found: {pathOrUrl}");
+
+                var extension = Path.GetExtension(pathOrUrl).ToLowerInvariant();
+                options.FileExtension = extension;
+
+                foreach (var converter in _pageConverters)
+                {
+                    if (converter.CanConvertFile(extension))
+                    {
+                        var results = await converter.ConvertToListAsync(pathOrUrl, options);
+                        if (results != null && results.Count > 0)
+                            return results;
+                    }
+                }
+            }
+
+            throw new UnsupportedFormatException($"Unsupported input: {pathOrUrl}");
+        }
+
+        /// <summary>
+        /// Registers a new page converter.
         /// </summary>
         /// <param name="converter">The converter to register.</param>
         public void RegisterPageConverter(DocumentConverter converter)

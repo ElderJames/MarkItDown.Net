@@ -102,6 +102,12 @@ namespace MarkItDownSharp.Converters
             };
         }
 
+
+        public override async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options)
+        {
+            var result = await ConvertAsync(pathOrUrl, options);
+            return result != null ? new List<DocumentConverterResult> { result } : new List<DocumentConverterResult>();
+        }
         private async Task<Dictionary<string, string>> GetMetadataAsync(HtmlDocument doc, string url)
         {
             var metadata = new Dictionary<string, string>();
