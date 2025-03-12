@@ -18,6 +18,7 @@ It supports:
 - [x] PowerPoint (.pptx)
 - [x] Confluence (spaces and single pages)
 
+
 > [!NOTE]
 >
 > Speech Recognition for audio converter has not been implemented yet. I'm happy to accept contributions for this feature.
