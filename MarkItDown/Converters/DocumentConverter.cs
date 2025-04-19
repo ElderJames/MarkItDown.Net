@@ -39,7 +39,7 @@ namespace MarkItDownSharp.Converters
         /// </summary>
         /// <param name="extension">The file extension (e.g., ".txt").</param>
         /// <returns>True if it can handle the extension; otherwise, false.</returns>
-        public virtual bool CanConvertFile(string extension)
+        public virtual bool CanConvertFile(string? extension)
         {
             return false;
         }

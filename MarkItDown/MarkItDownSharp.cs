@@ -41,7 +41,7 @@ namespace MarkItDownSharp
         /// <param name="pathOrUrl">The local file path or URL.</param>
         /// <param name="options">Additional conversion options.</param>
         /// <returns>A DocumentConverterResult containing the conversion output.</returns>
-        public async Task<DocumentConverterResult> ConvertLocalAsync(string pathOrUrl, ConversionOptions options = null)
+        public async Task<DocumentConverterResult> ConvertLocalAsync(string pathOrUrl, ConversionOptions? options = null)
         {
             options = options ?? new ConversionOptions();
             options.ParentConverters = _pageConverters;
@@ -88,7 +88,7 @@ namespace MarkItDownSharp
         /// <param name="pathOrUrl">The local file path or URL.</param>
         /// <param name="options">Additional conversion options.</param>
         /// <returns>A List of DocumentConverterResult containing the conversion output.</returns>
-        public async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions options = null)
+        public async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions? options = null)
         {
             options = options ?? new ConversionOptions();
             options.ParentConverters = _pageConverters;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MarkItDownSharp.Models;
 using NAudio.Wave;
 using File = System.IO.File;
+using TagLib;
 
 namespace MarkItDownSharp.Converters
 {

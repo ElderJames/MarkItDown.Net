@@ -32,15 +32,17 @@ namespace MarkItDownSharp.Converters
         }
 
 
-        public override bool CanConvertFile(string extension)
+        public override bool CanConvertFile(string? extension)
         {
-            return extension.Equals(".html", StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(".htm", StringComparison.OrdinalIgnoreCase);
+            return extension != null && (
+                   extension.Equals(".html", StringComparison.OrdinalIgnoreCase) ||
+                   extension.Equals(".htm", StringComparison.OrdinalIgnoreCase));
         }
 
         public override async Task<DocumentConverterResult> ConvertAsync(string pathOrUrl, ConversionOptions options)
         {
-            if (!CanConvertFile(options.FileExtension))
+            // Check if FileExtension is provided and can be converted
+            if (options.FileExtension == null || !CanConvertFile(options.FileExtension))
                 return null;
 
             var htmlContent = await Task.Run(() => File.ReadAllText(pathOrUrl));

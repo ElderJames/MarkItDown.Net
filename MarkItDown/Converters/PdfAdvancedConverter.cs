@@ -26,7 +26,7 @@ namespace MarkItDownSharp.Converters
 
         public override bool CanConvertUrl(string url)
         {
-            Uri uriResult;
+            Uri? uriResult;
             bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
             return result && Path.GetExtension(uriResult.LocalPath).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
@@ -37,7 +37,7 @@ namespace MarkItDownSharp.Converters
             return extension.Equals(".pdf", StringComparison.OrdinalIgnoreCase);
         }
 
-        public override async Task<DocumentConverterResult> ConvertAsync(string localPath, ConversionOptions options)
+        public override async Task<DocumentConverterResult?> ConvertAsync(string localPath, ConversionOptions options)
         {
             if (!CanConvertFile(options.FileExtension)) return null;
 
@@ -53,7 +53,7 @@ namespace MarkItDownSharp.Converters
             if (document.Sections().Any())
             {
                 var firstSection = document.Sections().First();
-                title = firstSection.Title;
+                title = firstSection.Title ?? title;
             }
 
             // Iterate through the document's text content
@@ -65,7 +65,8 @@ namespace MarkItDownSharp.Converters
             var result = new DocumentConverterResult
             {
                 Title = title,
-                TextContent = finalMarkdown
+                TextContent = finalMarkdown,
+                MetaData = new Dictionary<string, object>()
             };
 
             return result;
@@ -181,7 +182,7 @@ namespace MarkItDownSharp.Converters
     /// </summary>
     public class Block
     {
-        public string Tag { get; set; }
+        public string? Tag { get; set; }
         public int Level { get; set; }
         public int PageIdx { get; set; }
         public int BlockIdx { get; set; }
@@ -190,8 +191,8 @@ namespace MarkItDownSharp.Converters
         public List<double> BBox { get; set; }
         public List<string> Sentences { get; set; }
         public List<Block> Children { get; set; }
-        public Block Parent { get; set; }
-        public JObject BlockJson { get; set; }
+        public Block? Parent { get; set; }
+        public JObject? BlockJson { get; set; }
 
         public Block()
         {
@@ -445,17 +446,16 @@ namespace MarkItDownSharp.Converters
     {
         public int ColSpan { get; set; }
         public string CellValue { get; set; }
-        public Paragraph CellNode { get; set; }
+        public Paragraph? CellNode { get; set; }
 
         public TableCell(JObject cellJson) : base(cellJson)
         {
             ColSpan = cellJson["col_span"]?.ToObject<int>() ?? 1;
             CellValue = cellJson["cell_value"]?.ToString() ?? string.Empty;
 
-            if (!(CellValue is string))
+            if (cellJson["cell_value"] is JObject cellValueObj)
             {
-                // Assuming cell_value is a JSON object representing a Paragraph
-                CellNode = new Paragraph((JObject)cellJson["cell_value"]);
+                CellNode = new Paragraph(cellValueObj);
             }
             else
             {
