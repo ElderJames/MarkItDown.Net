@@ -9,11 +9,19 @@ using System.Threading.Tasks;
 using MarkItDownSharp.Models;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Images;
 
 namespace MarkItDownSharp.Converters
 {
     public class PdfConverter : DocumentConverter
     {
+        private readonly ImageConverter _imageConverter;
+
+        public PdfConverter(ImageConverter imageConverter)
+        {
+            _imageConverter = imageConverter;
+        }
+
         public override bool CanConvertUrl(string url)
         {
             return false;
@@ -24,6 +32,13 @@ namespace MarkItDownSharp.Converters
             return extension.Equals(".pdf", StringComparison.OrdinalIgnoreCase);
         }
 
+        private class ContentItem
+        {
+            public double Y { get; set; }
+            public string Text { get; set; }
+            public bool IsImage { get; set; }
+        }
+
         public override async Task<DocumentConverterResult> ConvertAsync(string localPath, ConversionOptions options)
         {
             if (!CanConvertFile(options.FileExtension)) return null;
@@ -32,51 +47,81 @@ namespace MarkItDownSharp.Converters
                 throw new FileNotFoundException($"File not found: {localPath}");
 
             var markdownBuilder = new StringBuilder();
-            var title = Path.GetFileNameWithoutExtension(localPath); // Default title: document name
+            var title = Path.GetFileNameWithoutExtension(localPath);
 
             using (var document = PdfDocument.Open(localPath))
             {
                 var pages = document.GetPages().ToList();
-                var isFirstLineExtracted = false; // Flag to check if the first line has been extracted
+                var isFirstLineExtracted = false;
 
                 foreach (var page in pages)
                 {
+                    var contentItems = new List<ContentItem>();
                     var words = page.GetWords().ToList();
 
+                    // 处理标题（如果还没有提取）
                     if (!isFirstLineExtracted && words.Any())
                     {
-                        // Group words into lines first
                         var lines = GroupWordsIntoLines(words);
-
                         if (lines.Any())
                         {
-                            // Extract the first line as the title
                             var firstLine = lines.First();
                             title = string.Join(" ", firstLine.Words.Select(w => w.Text)).Trim();
                             isFirstLineExtracted = true;
                         }
                     }
 
-                    // Group words into lines for the entire page
+                    // 处理文本内容
                     var linesInPage = GroupWordsIntoLines(words);
-
-                    // Sort lines by Y (top to bottom)
-                    var sortedLines = linesInPage.OrderByDescending(l => l.Y).ToList();
-
-                    // Append lines to the markdown content
-                    foreach (var line in sortedLines)
+                    foreach (var line in linesInPage)
                     {
-                        // Sort words in the line by their X positions (left to right)
                         var sortedWords = line.Words.OrderBy(w => w.BoundingBox.Left).ToList();
                         var lineText = string.Join(" ", sortedWords.Select(w => w.Text)).Trim();
-                        markdownBuilder.AppendLine(lineText);
+                        contentItems.Add(new ContentItem
+                        {
+                            Y = line.Y,
+                            Text = lineText,
+                            IsImage = false
+                        });
                     }
 
-                    markdownBuilder.AppendLine(); // Add a newline after each page for separation
+                    // 处理图片内容
+                    var images = page.GetImages().ToList();
+                    foreach (var image in images)
+                    {
+                        try
+                        {
+                            var imageData = image.RawBytes.ToArray();
+                            var extractedText = await _imageConverter.ExtractTextFromImage(imageData);
+                            if (!string.IsNullOrEmpty(extractedText))
+                            {
+                                // 获取图片在页面中的位置
+                                var imageY = image.Bounds.Bottom;
+                                contentItems.Add(new ContentItem
+                                {
+                                    Y = imageY,
+                                    Text = $"\n[Image OCR Result]:\n{extractedText}\n",
+                                    IsImage = true
+                                });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing image in PDF: {ex.Message}");
+                        }
+                    }
+
+                    // 按Y坐标排序所有内容（从上到下）
+                    var sortedContent = contentItems.OrderByDescending(item => item.Y);
+                    foreach (var item in sortedContent)
+                    {
+                        markdownBuilder.AppendLine(item.Text);
+                    }
+
+                    markdownBuilder.AppendLine();
                 }
             }
 
-            // Finalize the markdown content
             var finalMarkdown = markdownBuilder.ToString().Trim();
 
             var result = new DocumentConverterResult
