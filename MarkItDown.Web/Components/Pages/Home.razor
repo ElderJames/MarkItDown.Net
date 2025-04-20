@@ -1,0 +1,86 @@
+﻿@page "/"
+@using MarkItDownSharp
+@using MarkItDownSharp.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using AntDesign
+@inject MarkItDownConverter Converter
+@inject ILogger<Index> Logger
+
+<PageTitle>MarkItDown Demo</PageTitle>
+
+<InputFile OnChange="OnFileUpload" class="upload-input" />
+
+@if (!string.IsNullOrEmpty(_markdownContent))
+{
+    <Card Style="margin-top: 16px;">
+        <Tabs>
+            <TabPane Key="preview" Tab="Preview">
+                <div class="markdown-body">
+                    @((MarkupString)_htmlContent)
+                </div>
+            </TabPane>
+            <TabPane Key="markdown" Tab="Markdown">
+                <TextArea ReadOnly Value="@_markdownContent" Rows="20" />
+            </TabPane>
+        </Tabs>
+    </Card>
+}
+
+@code {
+    private string _markdownContent = string.Empty;
+    private string _htmlContent = string.Empty;
+
+    private async Task OnFileUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            // 创建带有原始扩展名的临时文件
+            var tempPath = Path.Combine(Path.GetTempPath(),
+            $"{Path.GetFileNameWithoutExtension(Path.GetTempFileName())}{Path.GetExtension(file.Name)}");
+
+            await using (var stream = file.OpenReadStream(maxAllowedSize: 10485760)) // 10MB max
+            {
+                await using (var fs = new FileStream(tempPath, FileMode.Create))
+                {
+                    await stream.CopyToAsync(fs);
+                }
+            }
+
+            try
+            {
+                // 使用 MarkItDown 转换文件
+                var result = await Converter.ConvertLocalAsync(tempPath, new ConversionOptions
+                {
+                    FileExtension = Path.GetExtension(file.Name)
+                });
+
+                _markdownContent = result.TextContent;
+                _htmlContent = Markdig.Markdown.ToHtml(_markdownContent);
+            }
+            finally
+            {
+                // 清理临时文件
+                if (File.Exists(tempPath))
+                {
+                    File.Delete(tempPath);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error converting file");
+        }
+    }
+}
+
+<style>
+    .upload-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .markdown-body {
+        padding: 16px;
+    }
+</style>
