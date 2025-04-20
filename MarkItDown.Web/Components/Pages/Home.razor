@@ -5,10 +5,22 @@
 @using AntDesign
 @inject MarkItDownConverter Converter
 @inject ILogger<Index> Logger
+@rendermode InteractiveServer
 
 <PageTitle>MarkItDown Demo</PageTitle>
 
-<InputFile OnChange="OnFileUpload" class="upload-input" />
+<div class="upload-container">
+    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Large">
+        <Icon Type="upload" /> 选择文件上传
+        <InputFile OnChange="OnFileUpload" class="upload-input" />
+    </Button>
+    @if (_isLoading)
+    {
+        <div style="margin-top: 10px;">
+            <Spin Tip="文件处理中..." />
+        </div>
+    }
+</div>
 
 @if (!string.IsNullOrEmpty(_markdownContent))
 {
@@ -29,11 +41,14 @@
 @code {
     private string _markdownContent = string.Empty;
     private string _htmlContent = string.Empty;
+    private bool _isLoading = false;
 
     private async Task OnFileUpload(InputFileChangeEventArgs e)
     {
         try
         {
+            _isLoading = true;
+            StateHasChanged();
             var file = e.File;
             // 创建带有原始扩展名的临时文件
             var tempPath = Path.Combine(Path.GetTempPath(),
@@ -70,6 +85,11 @@
         catch (Exception ex)
         {
             Logger.LogError(ex, "Error converting file");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
         }
     }
 }
