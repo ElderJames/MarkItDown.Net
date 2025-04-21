@@ -24,7 +24,7 @@ namespace MarkItDownSharp
             RegisterPageConverter(new ConfluenceConverter());  // highest priority for Confluence URLs
             RegisterPageConverter(new UrlConverter());
             RegisterPageConverter(new ZipConverter());
-            RegisterPageConverter(new PdfConverter());
+            // RegisterPageConverter(new PdfConverter());
             RegisterPageConverter(new DocxConverter());
             RegisterPageConverter(new XlsxConverter());
             RegisterPageConverter(new PptxConverter());
