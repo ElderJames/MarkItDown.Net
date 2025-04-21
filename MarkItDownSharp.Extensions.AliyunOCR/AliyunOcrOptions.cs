@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MarkItDownSharp.Extensions.AliyunOCR
 {
-    public class AliyunOptions
+    public class AliyunOcrOptions
     {
         public string AccessKeyId { get; set; } = string.Empty;
 

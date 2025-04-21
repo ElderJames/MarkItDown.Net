@@ -1,5 +1,6 @@
 ﻿// MarkItDown.Tests/BaseConverterTests.cs
 
+using MarkItDownSharp.Converters;
 using MarkItDownSharp.Models;
 
 namespace MarkItDownSharp.Tests;
@@ -11,7 +12,7 @@ public abstract class BaseConverterTests
 
     public BaseConverterTests()
     {
-        Converter = new MarkItDownConverter();
+        Converter = new MarkItDownConverter(new List<DocumentConverter>());
         TestDataPath = Path.Combine(Directory.GetCurrentDirectory(), "TestData");
     }
 

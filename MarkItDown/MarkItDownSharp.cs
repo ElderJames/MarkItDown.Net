@@ -14,25 +14,11 @@ namespace MarkItDownSharp
 {
     public class MarkItDownConverter
     {
-        private readonly List<DocumentConverter> _pageConverters;
+        private readonly IEnumerable<DocumentConverter> _pageConverters;
 
-        public MarkItDownConverter()
+        public MarkItDownConverter(IEnumerable<DocumentConverter> converters)
         {
-            _pageConverters = new List<DocumentConverter>();
-
-            // Register converters in order of priority
-            RegisterPageConverter(new ConfluenceConverter());  // highest priority for Confluence URLs
-            RegisterPageConverter(new UrlConverter());
-            RegisterPageConverter(new ZipConverter());
-            // RegisterPageConverter(new PdfConverter());
-            RegisterPageConverter(new DocxConverter());
-            RegisterPageConverter(new XlsxConverter());
-            RegisterPageConverter(new PptxConverter());
-            RegisterPageConverter(new PlainTextConverter());
-            RegisterPageConverter(new HtmlConverter());
-            RegisterPageConverter(new WavConverter());
-            RegisterPageConverter(new Mp3Converter());
-            // Add other converters as needed
+            _pageConverters = converters.ToList();
         }
 
         /// <summary>
@@ -44,7 +30,7 @@ namespace MarkItDownSharp
         public async Task<DocumentConverterResult> ConvertLocalAsync(string pathOrUrl, ConversionOptions? options = null)
         {
             options = options ?? new ConversionOptions();
-            options.ParentConverters = _pageConverters;
+            options.ParentConverters = _pageConverters.ToList();
 
             if (UrlHelper.IsValidUrl(pathOrUrl))
             {
@@ -91,7 +77,7 @@ namespace MarkItDownSharp
         public async Task<List<DocumentConverterResult>> ConvertToListAsync(string pathOrUrl, ConversionOptions? options = null)
         {
             options = options ?? new ConversionOptions();
-            options.ParentConverters = _pageConverters;
+            options.ParentConverters = _pageConverters.ToList();
 
             if (UrlHelper.IsValidUrl(pathOrUrl))
             {
@@ -124,15 +110,6 @@ namespace MarkItDownSharp
             }
 
             throw new UnsupportedFormatException($"Unsupported input: {pathOrUrl}");
-        }
-
-        /// <summary>
-        /// Registers a new page converter.
-        /// </summary>
-        /// <param name="converter">The converter to register.</param>
-        public void RegisterPageConverter(DocumentConverter converter)
-        {
-            _pageConverters.Insert(0, converter); // Higher priority converters are checked first
         }
     }
 }
