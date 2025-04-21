@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MarkItDownSharp.Models;
+using MarkItDownSharp.Services;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Images;
@@ -15,11 +16,12 @@ namespace MarkItDownSharp.Converters
 {
     public class PdfConverter : DocumentConverter
     {
-        private readonly ImageConverter _imageConverter;
+        private readonly IOcrService _ocrService;
 
-        public PdfConverter(ImageConverter imageConverter)
+        public PdfConverter(IOcrService ocrService)
         {
-            _imageConverter = imageConverter;
+            
+            _ocrService = ocrService;
         }
 
         public override bool CanConvertUrl(string url)
@@ -92,7 +94,7 @@ namespace MarkItDownSharp.Converters
                         try
                         {
                             var imageData = image.RawBytes.ToArray();
-                            var extractedText = await _imageConverter.ExtractTextFromImage(imageData);
+                            var extractedText = await _ocrService.ExtractTextAsync(imageData);
                             if (!string.IsNullOrEmpty(extractedText))
                             {
                                 // 获取图片在页面中的位置

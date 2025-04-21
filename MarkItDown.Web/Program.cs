@@ -1,5 +1,6 @@
 using MarkItDown.Web.Components;
 using MarkItDownSharp;
+using MarkItDownSharp.Extensions.AliyunOCR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,14 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddAntDesign();
-builder.Services.AddSingleton<MarkItDownConverter>();
+builder.Services.AddMarkItDown(options =>
+{
+    options.UseAliyunOcr(ocrOptions =>
+    {
+        ocrOptions.AccessKeyId = builder.Configuration["AliyunOcr:AccessKeyId"];
+        ocrOptions.AccessKeySecret = builder.Configuration["AliyunOcr:AccessKeySecret"];
+    });
+});
 
 var app = builder.Build();
 
