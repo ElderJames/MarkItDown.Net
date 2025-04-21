@@ -8,14 +8,10 @@ using Aliyun.Acs.Core;
 using Aliyun.Acs.Core.Profile;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using MarkItDownSharp.Services;
 
 namespace MarkItDownSharp.Extensions.AliyunOCR
 {
-    public interface IOcrService
-    {
-        Task<IdCardRecognitionResult> RecognizeIdCardAsync(byte[] image);
-    }
-
     public class OcrService : IOcrService
     {
         private readonly IClientProfile _profile;
@@ -28,7 +24,7 @@ namespace MarkItDownSharp.Extensions.AliyunOCR
                 options.Value.AccessKeySecret);//AccessKey Secret    
         }
 
-        public Task<IdCardRecognitionResult> RecognizeIdCardAsync(byte[] image)
+        public Task<string> ExtractTextAsync(byte[] imageData)
         {
             DefaultAcsClient client = new DefaultAcsClient(_profile);
             CommonRequest request = new CommonRequest();
@@ -36,15 +32,16 @@ namespace MarkItDownSharp.Extensions.AliyunOCR
             request.Domain = "ocr-api.cn-hangzhou.aliyuncs.com";
             request.Version = "2021-07-07";
             request.Action = "RecognizeAllText";
-            request.AddQueryParameters("Type", "IdCard");
-            request.SetContent(image, "utf-8", FormatType.RAW);
+            request.AddQueryParameters("Type", "Advanced");
+            request.SetContent(imageData, "utf-8", FormatType.RAW);
 
             //发送短信
             CommonResponse response = client.GetCommonResponse(request);
-            var result = JsonSerializer.Deserialize<Rootobject>(response.Data);
+            // var result = JsonSerializer.Deserialize<Rootobject>(response.Data);
 
-            var data = result?.Data.SubImages[0].KvInfo.Data;
+            // var data = result?.Data.SubImages[0].KvInfo.Data;
 
+            return Task.FromResult(response.Data);
         }
     }
 
