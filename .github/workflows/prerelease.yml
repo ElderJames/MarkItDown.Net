@@ -2,7 +2,7 @@ name: Publish Preview Package
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ master, main, develop ]
     paths-ignore:
       - '**.md'
       - '.gitignore'
@@ -40,8 +40,21 @@ jobs:
         useConfigFile: true
         configFilePath: .github/GitVersion.yml
     
+    - name: Display GitVersion outputs
+      run: |
+        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
+        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
+    
     - name: Set Preview Version
-      run: echo "PREVIEW_VERSION=${{ steps.gitversion.outputs.semVer }}-preview.${{ github.run_number }}" >> $GITHUB_ENV
+      run: |
+        # Use GitVersion's calculated version with a preview suffix
+        PREVIEW_VERSION=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+        if [[ "$PREVIEW_VERSION" != *"-"* ]]; then
+          PREVIEW_VERSION="$PREVIEW_VERSION-preview.${{ github.run_number }}"
+        fi
+        echo "PREVIEW_VERSION=$PREVIEW_VERSION" >> $GITHUB_ENV
     
     - name: Restore dependencies
       run: dotnet restore

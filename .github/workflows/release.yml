@@ -2,11 +2,12 @@ name: Release NuGet Package
 
 on:
   release:
-    types: [published]
+    types: [released]
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    if: "!github.event.release.prerelease"
     
     steps:
     - uses: actions/checkout@v3
@@ -20,7 +21,11 @@ jobs:
           9.0.x
     
     - name: Set VERSION variable from release
-      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      run: |
+        # Remove the 'v' prefix if present
+        VERSION=${{ github.event.release.tag_name }}
+        VERSION=${VERSION#v}
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
     
     - name: Restore dependencies
       run: dotnet restore
