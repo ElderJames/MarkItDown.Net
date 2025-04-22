@@ -1,16 +1,21 @@
 name: Release NuGet Package
 
 on:
-  release:
-    types: [released]
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-*"  # 同时匹配预发布版本，如 1.0.0-beta.1
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    if: "!github.event.release.prerelease"
+    # 只在非预发布版本时发布到NuGet
+    if: "!contains(github.ref, '-')"
     
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -20,11 +25,11 @@ jobs:
           7.0.x
           9.0.x
     
-    - name: Set VERSION variable from release
+    - name: Set VERSION variable from tag
       run: |
-        # Remove the 'v' prefix if present
-        VERSION=${{ github.event.release.tag_name }}
-        VERSION=${VERSION#v}
+        # Remove refs/tags/ prefix
+        VERSION=${GITHUB_REF#refs/tags/}
+        echo "Using version: $VERSION"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
     
     - name: Restore dependencies

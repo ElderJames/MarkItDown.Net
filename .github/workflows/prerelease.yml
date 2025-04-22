@@ -40,20 +40,23 @@ jobs:
         useConfigFile: true
         configFilePath: .github/GitVersion.yml
     
-    - name: Display GitVersion outputs
-      run: |
-        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
-        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
-    
     - name: Set Preview Version
       run: |
-        # Use GitVersion's calculated version with a preview suffix
-        PREVIEW_VERSION=${{ steps.gitversion.outputs.nuGetVersionV2 }}
-        if [[ "$PREVIEW_VERSION" != *"-"* ]]; then
-          PREVIEW_VERSION="$PREVIEW_VERSION-preview.${{ github.run_number }}"
+        # 使用 GitVersion 的主版本号作为基础
+        BASE_VERSION="${{ steps.gitversion.outputs.majorMinorPatch }}"
+        
+        # 获取预发布标签（如果有）
+        PRERELEASE_TAG="${{ steps.gitversion.outputs.preReleaseTagWithDash }}"
+        
+        # 如果没有预发布标签，添加preview标签
+        if [ -z "$PRERELEASE_TAG" ]; then
+          PREVIEW_VERSION="$BASE_VERSION-preview.${{ github.run_number }}"
+        else
+          # 如果已经有预发布标签，使用它
+          PREVIEW_VERSION="$BASE_VERSION$PRERELEASE_TAG"
         fi
+        
+        echo "Generated version: $PREVIEW_VERSION"
         echo "PREVIEW_VERSION=$PREVIEW_VERSION" >> $GITHUB_ENV
     
     - name: Restore dependencies
