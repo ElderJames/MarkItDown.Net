@@ -1,0 +1,56 @@
+name: Publish Preview Package
+
+on:
+  push:
+    branches: [ master, main ]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - '.editorconfig'
+
+jobs:
+  build-and-publish-preview:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Required for GitVersion
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          9.0.x
+    
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.10.2
+      with:
+        preferLatestVersion: true
+
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.10.2
+      with:
+        useConfigFile: true
+        configFilePath: .github/GitVersion.yml
+    
+    - name: Set Preview Version
+      run: echo "PREVIEW_VERSION=${{ steps.gitversion.outputs.semVer }}-preview.${{ github.run_number }}" >> $GITHUB_ENV
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore --configuration Release /p:Version=${PREVIEW_VERSION}
+    
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+    
+    - name: Pack
+      run: dotnet pack --no-build --configuration Release /p:Version=${PREVIEW_VERSION} --output nupkgs
+    
+    - name: Push to NuGet
+      run: dotnet nuget push "./nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} 
