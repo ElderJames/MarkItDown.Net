@@ -16,7 +16,7 @@
   
   <ItemGroup>
     <ProjectReference Include="../MarkItDown/MarkItDownSharp.csproj" />
-    <ProjectReference Include="../MarkItDownSharp.Extensions.AliyunOCR/MarkItDownSharp.Extensions.AliyunOCR.csproj" />
+    <ProjectReference Include="../MarkItDown.Extensions.AliyunOCR/MarkItDown.Extensions.AliyunOCR.csproj" />
   </ItemGroup>
 
 </Project>

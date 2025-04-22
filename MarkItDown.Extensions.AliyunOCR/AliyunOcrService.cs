@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using MarkItDownSharp.Services;
 
-namespace MarkItDownSharp.Extensions.AliyunOCR
+namespace MarkItDown.Extensions.AliyunOCR
 {
     public class AliyunOcrService : IOcrService
     {

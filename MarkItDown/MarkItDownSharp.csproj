@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>MarkItDown.Net</PackageId>
+    <PackageId>MarkItDown</PackageId>
     <Authors>KelterAntunes;James Yeung</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Company></Company>

@@ -4,7 +4,7 @@ using MarkItDownSharp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace MarkItDownSharp.Extensions.AliyunOCR
+namespace MarkItDown.Extensions.AliyunOCR
 {
     public static class MarkItDownOptionsExtensions
     {

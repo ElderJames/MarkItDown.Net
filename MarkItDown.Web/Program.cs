@@ -1,6 +1,6 @@
 using MarkItDown.Web.Components;
 using MarkItDownSharp;
-using MarkItDownSharp.Extensions.AliyunOCR;
+using MarkItDown.Extensions.AliyunOCR;
 
 var builder = WebApplication.CreateBuilder(args);
 

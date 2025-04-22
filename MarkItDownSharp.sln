@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDownSharp.Tests", "Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDown.Web", "MarkItDown.Web\MarkItDown.Web.csproj", "{54280665-9701-4495-B8C6-A953945E9BC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDownSharp.Extensions.AliyunOCR", "MarkItDownSharp.Extensions.AliyunOCR\MarkItDownSharp.Extensions.AliyunOCR.csproj", "{4A55C9D6-5BB3-46FF-88A4-6CC02C1B978C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkItDown.Extensions.AliyunOCR", "MarkItDown.Extensions.AliyunOCR\MarkItDown.Extensions.AliyunOCR.csproj", "{4A55C9D6-5BB3-46FF-88A4-6CC02C1B978C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
