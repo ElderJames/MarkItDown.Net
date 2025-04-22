@@ -10,7 +10,7 @@ public class PdfConverterTests : BaseConverterTests
         // Arrange
         var fileName = "Sample.pdf";
         var expectedTitle = "Lorem ipsum";
-        var expectedContent = "Lorem ipsum\r\nLorem ipsum dolor sit amet, consectetur adipiscing\r\nelit.";
+        var expectedContent = "Lorem ipsum\nLorem ipsum dolor sit amet, consectetur adipiscing\nelit.";
 
         // Act
         var result = await ConvertAsync(fileName);
@@ -18,6 +18,6 @@ public class PdfConverterTests : BaseConverterTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedTitle, result.Title);
-        Assert.Contains(expectedContent, result.TextContent);
+        Assert.True(TextContains(result.TextContent, expectedContent));
     }
 }

@@ -11,7 +11,7 @@ public class HtmlConverterTests : BaseConverterTests
         var fileName = "Sample.html";
         var expectedTitle = "Sample HTML Document";
         var expectedContent =
-            "# Welcome to MarkItDown\r\n\r\nThis is a sample paragraph to be converted to Markdown.\r\n\r\n- First item\r\n- Second item";
+            "# Welcome to MarkItDown\n\nThis is a sample paragraph to be converted to Markdown.\n\n- First item\n- Second item";
 
         // Act
         var result = await ConvertAsync(fileName);
@@ -19,6 +19,6 @@ public class HtmlConverterTests : BaseConverterTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedTitle, result.Title);
-        Assert.Equal(expectedContent, result.TextContent);
+        Assert.True(TextEquals(expectedContent, result.TextContent));
     }
 }

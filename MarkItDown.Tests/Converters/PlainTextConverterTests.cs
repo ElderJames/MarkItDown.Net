@@ -16,7 +16,7 @@ public class PlainTextConverterTests : BaseConverterTests
         // Assert
         Assert.NotNull(result);
         Assert.Null(result.Title); // As per PlainTextConverter implementation
-        var expectedContent = File.ReadAllText(Path.Combine(TestDataPath, fileName));
-        Assert.Equal(expectedContent, result.TextContent);
+        var expectedContent = await File.ReadAllTextAsync(Path.Combine(TestDataPath, fileName));
+        Assert.True(TextEquals(expectedContent, result.TextContent));
     }
 }

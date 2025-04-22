@@ -19,6 +19,6 @@ public class URLConverterTests : BaseConverterTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedTitle, result.Title);
-        Assert.Contains(expectedContent, result.TextContent);
+        Assert.True(TextContains(result.TextContent, expectedContent));
     }
 }
